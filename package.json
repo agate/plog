@@ -1,0 +1,21 @@
+{
+  "name": "plog",
+  "version": "1.0.0",
+  "description": "A log generator",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agate/plog.git"
+  },
+  "keywords": [
+    "log",
+    "generator"
+  ],
+  "bin": {
+    "plog": "./bin/plog"
+  },
+  "author": "agate",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.19.0"
+  }
+}

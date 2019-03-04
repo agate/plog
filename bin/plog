@@ -1,0 +1,48 @@
+#!/usr/bin/env node
+
+const cli = require('commander')
+const package = require('../package')
+
+cli
+  .version(package.version)
+  .option('--batch-size [batch size]', 'Config batch size')
+  .option('--batch-interval [batch interval]', 'Sleep time for each batch')
+  .option('--debug', 'Enable debug mode')
+  .option('--format [format]', 'Log output format. Currently, only support json')
+  .option('--line-size [line size]', 'Config line size')
+  .option('--one-batch', 'Just output one batch log')
+  .option('--time [time]', 'Config time for generating logs')
+  .parse(process.argv)
+
+const BATCH_SIZE = cli.batchSize || 1
+const LINE_SIZE = cli.lineSize || 80
+const BATCH_INTERVAL = cli.batchInterval || 0
+const JSON_TEMPLATE_SIZE = 68
+const MESSAGE_SIZE = LINE_SIZE - JSON_TEMPLATE_SIZE
+const ONE_BATCH = cli.oneBatch
+const TIME = cli.time || 0
+const STARTED_AT = Date.now()
+
+function generateLogs() {
+  let logs = ''
+  for (let i=0; i<BATCH_SIZE; i++) {
+    logs += `{"level":"info","timestamp":"${new Date().toISOString()}","message":"${'x'.repeat(MESSAGE_SIZE)}"}\n`
+  }
+  return logs
+}
+
+(function run() {
+  process.stdout.write(generateLogs())
+  if (cli.debug) process.stderr.write("Batch End\n")
+  if (!ONE_BATCH) {
+    setTimeout(function () {
+      run()
+    }, BATCH_INTERVAL * 1000)
+  }
+})()
+
+if (!ONE_BATCH) {
+  setInterval(function timeoutChecker() {
+    if (TIME > 0 && Date.now() - STARTED_AT > TIME * 1000) process.exit(0)
+  }, 1000)
+}
