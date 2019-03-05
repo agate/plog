@@ -1,5 +1,5 @@
 {
-  "name": "plog",
+  "name": "@agate/plog",
   "version": "1.0.0",
   "description": "A log generator",
   "repository": {
